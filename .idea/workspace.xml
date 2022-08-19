@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e5cb60d6-4bed-4806-aa3c-9d4f3f755512" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/config/db.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controllers/user.controller.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/middleware/authJWT.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/user.model.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/users.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/users.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.router.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +56,7 @@
       <option name="presentableId" value="Default" />
       <updated>1660835115362</updated>
       <workItem from="1660835117299" duration="973000" />
+      <workItem from="1660899754500" duration="164000" />
     </task>
     <servers />
   </component>
