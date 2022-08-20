@@ -1,9 +1,10 @@
 let config = require('../config/db.config'),
     jwt = require('jsonwebtoken');
 
-let User = require("../models/user.model");
+let User = require("../Models/user.model");
+const asyncWrapper = require("../Middleware/async");
 module.exports = {
-    signup:async function (req, res) {
+    signup: asyncWrapper( async function (req, res) {
         console.log(req.body);
         if (!req.body.email || !req.body.password) {
             res.json({success: false, msg: 'Please pass username and password.'});
@@ -19,8 +20,8 @@ module.exports = {
                 res.json({success: true, msg: 'Successful created new user.'});
             });
         }
-    },
-    signin:  function  (req, res) {
+    }),
+    signin: asyncWrapper(function  (req, res) {
          User.findOne({
             email: req.body.email
         }, function (err, user) {
@@ -41,7 +42,5 @@ module.exports = {
                 });
             }
         })
-
-    }
-
+    })
 };
