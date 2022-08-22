@@ -15,7 +15,7 @@ module.exports = {
             });
             await newUser.save(function (err) {
                 if (err) {
-                    return res.json({success: false, msg: 'Username already exists.'});
+                    return res.json({success: false, msg: err.keyValue ? "Email already is exists" : err.message});
                 }
                 res.json({success: true, msg: 'Successful created new user.'});
             });
