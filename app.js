@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const path = require('path');
 const cors = require('cors')
 const auth = require('./Routes/auth.router');
+const icon = require('./Routes/icon.router');
+const wallet = require('./Routes/wallet.router');
 const connectDB = require('./config/db.config')
 const passport = require('passport');
 const bodyParser = require('body-parser');
@@ -28,6 +30,8 @@ app.get('/', function(req, res) {
 
 
 app.use('/auth', auth);
+app.use('/icon', icon);
+app.use('/wallet', wallet);
 //middleware
 // app.use('/api', passport.authenticate('jwt', { session: false}), book);
 

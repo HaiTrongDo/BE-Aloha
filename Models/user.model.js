@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const argon2 = require("argon2");
+const bcrypt = require('bcrypt-nodejs');
 
 
 
@@ -16,6 +16,8 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
+        minLength: [6,"is must be at least 6 characters"],
+        maxLength: [12,"is must be at most 12 characters"],
         required: true
     }
 })
