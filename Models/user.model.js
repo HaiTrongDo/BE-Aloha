@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt-nodejs');
 
 
-
 const UserSchema = new Schema({
     email: {
         type: String,
@@ -16,9 +15,13 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
-        minLength: [6,"is must be at least 6 characters"],
-        maxLength: [12,"is must be at most 12 characters"],
-        required: true
+    },
+    avatarUrl: {
+        type: String
+    },
+    fromThirdPartyAuth: {
+        type:Boolean,
+        default: false
     }
 })
 

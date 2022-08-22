@@ -13,4 +13,6 @@ router.route('/signup')
 router.route('/signin')
     .post(authenticationController.signin);
 
+router.route('/google')
+    .post(authenticationController.signInWithGoogle);
 module.exports = router;

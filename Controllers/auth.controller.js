@@ -1,10 +1,12 @@
 let config = require('../config/db.config'),
     jwt = require('jsonwebtoken');
-
 let User = require("../Models/user.model");
 const asyncWrapper = require("../Middleware/async");
+
+
 module.exports = {
-    signup: asyncWrapper( async function (req, res) {
+
+    signup: asyncWrapper(async function (req, res) {
         console.log(req.body);
         if (!req.body.email || !req.body.password) {
             res.json({success: false, msg: 'Please pass username and password.'});
@@ -21,20 +23,21 @@ module.exports = {
             });
         }
     }),
-    signin: asyncWrapper(function  (req, res) {
-         User.findOne({
+
+    signin: asyncWrapper(function (req, res) {
+        User.findOne({
             email: req.body.email
         }, function (err, user) {
-            if (err){
+            if (err) {
                 throw err;
             }
-             console.log(user)
+            console.log(user)
             if (!user) {
                 res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
             } else {
                 user.comparePassword(req.body.password, function (err, isMatch) {
                     if (isMatch && !err) {
-                        let token = jwt.sign(user.toJSON(),process.env.SECRET_KEY);
+                        let token = jwt.sign(user.toJSON(), process.env.SECRET_KEY);
                         res.json({success: true, token: 'JWT ' + token});
                     } else {
                         res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
@@ -42,5 +45,15 @@ module.exports = {
                 });
             }
         })
+    }),
+
+    signInWithGoogle: asyncWrapper(async function (req, res, next) {
+        let currentUser = await User.findOne({email: req.body.email})
+        if (!currentUser) {
+            let currentUser = new User({...req.body, fromThirdPartyAuth: true});
+            const savedUser = await currentUser.save()
+        }
+        let token = jwt.sign(JSON.stringify(req.body), process.env.SECRET_KEY);
+        res.status(200).json({success: true, token: 'JWT ' + token});
     })
 };
