@@ -11,7 +11,7 @@ module.exports = {
     signup: asyncWrapper(async function (req, res) {
         console.log(req.body);
         if (!req.body.email || !req.body.password) {
-            res.json({success: false, msg: 'Please pass username and password.'});
+            res.status(401).json({success: false, msg: 'Please pass username and password.'});
         } else {
             const hashPassword = await argon2.hash(req.body.password)
             let newUser = new User({
@@ -19,8 +19,7 @@ module.exports = {
             });
             await newUser.save(function (err) {
                 if (err) {
-                    console.log(err)
-                    return res.json({success: false, msg: 'Username already exists.'});
+                    return res.status(401).json({success: false, msg: 'Username already exists.'});
                 }
                 res.json({success: true, msg: 'Successful created new user.'});
             });
