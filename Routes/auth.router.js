@@ -1,9 +1,7 @@
 let express = require('express'),
     router = express.Router();
 let authenticationController = require('../Controllers/auth.controller');
-
-console.log(authenticationController)
-
+const verifyToken = require("../Middleware/auth.middleware");
 
 // SignUp
 router.route('/signup')
@@ -12,5 +10,11 @@ router.route('/signup')
 // //SignIn
 router.route('/signin')
     .post(authenticationController.signin);
+
+router.route('/google')
+    .post(authenticationController.signInWithGoogle);
+
+router.route('/change-password')
+    .post(verifyToken, authenticationController.changePassword);
 
 module.exports = router;
