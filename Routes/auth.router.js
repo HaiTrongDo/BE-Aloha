@@ -11,14 +11,10 @@ router.route('/signup')
 router.route('/signin')
     .post(authenticationController.signin);
 
-// //SignIn
+router.route('/google')
+    .post(authenticationController.signInWithGoogle);
 
 router.route('/change-password')
     .post(verifyToken, authenticationController.changePassword);
-
-// router.post('/change-password', verifyToken, (req, res) => {
-//     authenticationController.changePassword
-// })
-
 
 module.exports = router;

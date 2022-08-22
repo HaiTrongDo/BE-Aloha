@@ -4,7 +4,10 @@ let jwt = require('jsonwebtoken');
 
 let User = require("../Models/user.model");
 const asyncWrapper = require("../Middleware/async");
+
+
 module.exports = {
+
     signup: asyncWrapper(async function (req, res) {
         console.log(req.body);
         if (!req.body.email || !req.body.password) {
@@ -71,4 +74,14 @@ module.exports = {
             res.status(500).json({success: false, message: err.message})
         }
     }),
+
+    signInWithGoogle: asyncWrapper(async function (req, res, next) {
+        let currentUser = await User.findOne({email: req.body.email})
+        if (!currentUser) {
+            let currentUser = new User({...req.body, fromThirdPartyAuth: true});
+            const savedUser = await currentUser.save()
+        }
+        let token = jwt.sign(JSON.stringify(req.body), process.env.SECRET_KEY);
+        res.status(200).json({success: true, token: 'JWT ' + token});
+    })
 };
