@@ -16,8 +16,8 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
-        min: 6,
-        max: 12,
+        minLength: [6,"is must be at least 6 characters"],
+        maxLength: [12,"is must be at most 12 characters"],
         required: true
     }
 })
@@ -43,6 +43,7 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.methods.comparePassword = function (passw, cb) {
+    console.log(passw)
     bcrypt.compare(passw, this.password, function (err, isMatch) {
         if (err) {
             return cb(err);
