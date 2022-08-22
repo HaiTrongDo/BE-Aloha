@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
+
 app.get('/', function(req, res) {
     res.send('Page under construction.');
 });
@@ -27,6 +28,7 @@ app.get('/', function(req, res) {
 
 
 app.use('/auth', auth);
+//middleware
 // app.use('/api', passport.authenticate('jwt', { session: false}), book);
 
 connectDB().then(() => {
