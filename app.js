@@ -5,6 +5,7 @@ const cors = require('cors')
 const auth = require('./Routes/auth.router');
 const icon = require('./Routes/icon.router');
 const wallet = require('./Routes/wallet.router');
+const myAccount =  require('./Routes/my-account.router')
 const connectDB = require('./config/db.config')
 const passport = require('passport');
 const bodyParser = require('body-parser');
@@ -33,6 +34,7 @@ app.get('/', function(req, res) {
 app.use('/auth', auth);
 app.use('/icon', icon);
 app.use('/wallet', wallet);
+app.use('/my-account', myAccount);
 app.use('/transaction',transaction);
 //middleware
 // app.use('/api', passport.authenticate('jwt', { session: false}), book);
