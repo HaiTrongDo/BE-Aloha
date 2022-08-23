@@ -9,6 +9,6 @@ const IconSchema = new Schema({
         type: String,
         require: true,
     }
-})
+},{timestamps: true})
 
 module.exports = mongoose.model('Icon', IconSchema);

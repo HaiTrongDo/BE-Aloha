@@ -22,7 +22,19 @@ const UserSchema = new Schema({
     fromThirdPartyAuth: {
         type:Boolean,
         default: false
-    }
-})
+    },
+    phone:{
+        type: String,
+        optional: true,
+    },
+    company:{
+        type: String,
+        optional: true,
+    },
+    birthday:{
+        type: String,
+        optional: true,
+    },
+},{timestamps: true})
 
 module.exports = mongoose.model('User', UserSchema);
