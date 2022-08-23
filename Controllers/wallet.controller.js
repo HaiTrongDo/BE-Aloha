@@ -19,7 +19,7 @@ module.exports = {
         });
     },
     renderWallet: async (req, res, next) => {
-        let wallets = await Wallet.find().populate([{path:'icon',select:['name','url']},{path:'currency',select:['name','url']}])
+        let wallets = await Wallet.find().populate([{path:'icon',select:['name','url']},{path:'currency',select:['name','url','code']}])
         res.json({success: true,data:wallets})
     },
 }
