@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
 const verifyToken = (req, res, next) =>{
     const authHeader = req.header('Authorization');
-    const token = authHeader.split(' ')[2];
+    const token = authHeader.split(' ')[1];
     console.log(token)
     if (!token)
         return res.status(401).json({success: false, message: 'acces token not found'})
