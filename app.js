@@ -9,7 +9,8 @@ const myAccount =  require('./Routes/my-account.router')
 const connectDB = require('./config/db.config')
 const passport = require('passport');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const transaction = require('./Routes/transaction.router')
 
 const app = express();
 const PORT = process.env.PORT || 8080
@@ -29,10 +30,12 @@ app.get('/', function(req, res) {
 });
 
 
+
 app.use('/auth', auth);
 app.use('/icon', icon);
 app.use('/wallet', wallet);
 app.use('/my-account', myAccount);
+app.use('/transaction',transaction);
 //middleware
 // app.use('/api', passport.authenticate('jwt', { session: false}), book);
 
@@ -46,6 +49,7 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
+
 
 app.listen(PORT,()=>{
     console.log(`server is listing on ${PORT}`)
