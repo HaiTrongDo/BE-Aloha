@@ -11,14 +11,10 @@ router.route('/signup')
 router.route('/signin')
     .post(authenticationController.signin);
 
-// //SignIn
+router.route('/firebase')
+    .post(authenticationController.signInWithFireBase);
 
 router.route('/change-password')
     .put(verifyToken, authenticationController.changePassword);
-
-// router.post('/change-password', verifyToken, (req, res) => {
-//     authenticationController.changePassword
-// })
-
 
 module.exports = router;

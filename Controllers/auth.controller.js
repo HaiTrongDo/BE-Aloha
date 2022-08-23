@@ -4,11 +4,14 @@ let jwt = require('jsonwebtoken');
 
 let User = require("../Models/user.model");
 const asyncWrapper = require("../Middleware/async");
+
+
 module.exports = {
+
     signup: asyncWrapper(async function (req, res) {
         console.log(req.body);
         if (!req.body.email || !req.body.password) {
-            res.json({success: false, msg: 'Please pass username and password.'});
+            res.status(401).json({success: false, msg: 'Please pass username and password.'});
         } else {
             const hashPassword = await argon2.hash(req.body.password)
             let newUser = new User({
@@ -16,8 +19,7 @@ module.exports = {
             });
             await newUser.save(function (err) {
                 if (err) {
-                    console.log(err)
-                    return res.json({success: false, msg: 'Username already exists.'});
+                    return res.status(401).json({success: false, msg: 'Username already exists.'});
                 }
                 res.json({success: true, msg: 'Successful created new user.'});
             });
@@ -71,4 +73,15 @@ module.exports = {
             res.status(500).json({success: false, message: err.message})
         }
     }),
+
+    signInWithFireBase: asyncWrapper(async function (req, res, next) {
+        let currentUser = await User.findOne({email: req.body.email})
+        if (!currentUser) {
+            let currentUser = new User({...req.body, fromThirdPartyAuth: true});
+            const savedUser = await currentUser.save()
+        }
+        let token = jwt.sign(JSON.stringify(req.body), process.env.SECRET_KEY);
+        res.status(200).json({success: true, token: 'JWT ' + token, msg:"Login successful"});
+    }),
+
 };

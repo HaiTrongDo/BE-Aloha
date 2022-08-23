@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const argon2 = require("argon2");
-
+const bcrypt = require('bcrypt-nodejs');
 
 
 const UserSchema = new Schema({
@@ -16,7 +15,13 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
-        required: true
+    },
+    avatarUrl: {
+        type: String
+    },
+    fromThirdPartyAuth: {
+        type:Boolean,
+        default: false
     }
 })
 
