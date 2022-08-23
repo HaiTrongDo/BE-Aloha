@@ -5,6 +5,7 @@ const cors = require('cors')
 const auth = require('./Routes/auth.router');
 const icon = require('./Routes/icon.router');
 const wallet = require('./Routes/wallet.router');
+const myAccount =  require('./Routes/my-account.router')
 const connectDB = require('./config/db.config')
 const passport = require('passport');
 const bodyParser = require('body-parser');
@@ -28,10 +29,10 @@ app.get('/', function(req, res) {
 });
 
 
-
 app.use('/auth', auth);
 app.use('/icon', icon);
 app.use('/wallet', wallet);
+app.use('/my-account', myAccount);
 //middleware
 // app.use('/api', passport.authenticate('jwt', { session: false}), book);
 
@@ -45,7 +46,6 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
-
 
 app.listen(PORT,()=>{
     console.log(`server is listing on ${PORT}`)
