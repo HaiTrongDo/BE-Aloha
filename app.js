@@ -8,7 +8,8 @@ const wallet = require('./Routes/wallet.router');
 const connectDB = require('./config/db.config')
 const passport = require('passport');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const transaction = require('./Routes/transaction.router')
 
 const app = express();
 const PORT = process.env.PORT || 8080
@@ -32,6 +33,7 @@ app.get('/', function(req, res) {
 app.use('/auth', auth);
 app.use('/icon', icon);
 app.use('/wallet', wallet);
+app.use('/transaction',transaction);
 //middleware
 // app.use('/api', passport.authenticate('jwt', { session: false}), book);
 
