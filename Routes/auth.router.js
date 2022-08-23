@@ -14,7 +14,7 @@ router.route('/signin')
 // //SignIn
 
 router.route('/change-password')
-    .post(verifyToken, authenticationController.changePassword);
+    .put(verifyToken, authenticationController.changePassword);
 
 // router.post('/change-password', verifyToken, (req, res) => {
 //     authenticationController.changePassword
