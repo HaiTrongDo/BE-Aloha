@@ -74,15 +74,13 @@ module.exports = {
     }),
 
     signInWithFireBase: asyncWrapper(async function (req, res, next) {
-        console.log(req.body)
         let currentUser = await User.findOne({email: req.body.email})
         if (!currentUser) {
             let newUser = new User({...req.body, fromThirdPartyAuth: true});
             currentUser = await newUser.save()
-            console.log(currentUser._id);
         }
         let token = jwt.sign(JSON.stringify(req.body), process.env.SECRET_KEY);
-        res.status(200).json({success: true, token: 'JWT ' + token, msg:"Login successful", userId:currentUser._id});
+        res.status(200).json({success: true, token: 'JWT ' + token, msg:"Login successful", currentUser});
     }),
 
 };
