@@ -3,7 +3,7 @@ let express = require('express'),
 let myAccountController = require('../Controllers/my-account.controller')
 
 router.route('/change-profile')
-    .post(myAccountController.getCurrentUserInfo)
+    // .post(myAccountController.getCurrentUserInfo)
     .put(myAccountController.updateProfile);
 
 module.exports = router;
