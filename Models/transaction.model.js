@@ -24,6 +24,6 @@ const TransactionSchema= new Schema({
         type:String,
         require:false
     }
-})
+},{timestamps: true})
 
 module.exports=mongoose.model('transaction',TransactionSchema)

@@ -16,6 +16,6 @@ const CategorySchema=new Schema({
         type:String,
         ref:'icon'
     }
-})
+},{timestamps: true})
 
 module.exports=mongoose.model('category',CategorySchema)

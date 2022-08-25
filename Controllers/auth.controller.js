@@ -26,7 +26,6 @@ module.exports = {
         }
     }),
     signin: asyncWrapper(function (req, res) {
-        console.log(req.body.email)
         User.findOne({
             email: req.body.email
         }, async function (err, user) {
@@ -34,7 +33,6 @@ module.exports = {
                 console.log(err)
                 throw err;
             }
-            console.log(user)
             if (!user)
                 return res
                     .status(400).json({success: false, message: 'wrong email or password'})
@@ -42,6 +40,7 @@ module.exports = {
             if (!passwordValid) return res.status(400).json({success: false, message: 'wrong email or password'})
             //tra ve 1 token
             let token = jwt.sign(user.toJSON(), process.env.SECRET_KEY);
+            console.log(token)
             res.json({success: true, token: 'JWT ' + token});
         })
     }),
@@ -77,11 +76,11 @@ module.exports = {
     signInWithFireBase: asyncWrapper(async function (req, res, next) {
         let currentUser = await User.findOne({email: req.body.email})
         if (!currentUser) {
-            let currentUser = new User({...req.body, fromThirdPartyAuth: true});
-            const savedUser = await currentUser.save()
+            let newUser = new User({...req.body, fromThirdPartyAuth: true});
+            currentUser = await newUser.save()
         }
         let token = jwt.sign(JSON.stringify(req.body), process.env.SECRET_KEY);
-        res.status(200).json({success: true, token: 'JWT ' + token, msg:"Login successful"});
+        res.status(200).json({success: true, token: 'JWT ' + token, msg:"Login successful", currentUser});
     }),
 
 };

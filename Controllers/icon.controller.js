@@ -13,5 +13,9 @@ module.exports = {
             }
             res.json({success: true, msg: 'Successful created new icon.'});
         });
+    },
+    getAll:async (req,res)=>{
+        const data = await Icon.find();
+        res.json({success: false, data:data})
     }
 }
