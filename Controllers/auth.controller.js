@@ -40,8 +40,7 @@ module.exports = {
             if (!passwordValid) return res.status(400).json({success: false, message: 'wrong email or password'})
             //tra ve 1 token
             let token = jwt.sign(user.toJSON(), process.env.SECRET_KEY);
-            console.log(token)
-            res.json({success: true, token: 'JWT ' + token});
+            res.json({success: true, token: 'JWT ' + token,userId:user._id});
         })
     }),
 
