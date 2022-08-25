@@ -25,5 +25,13 @@ module.exports={
     renderCategory: async (req,res,next)=>{
         const category = await Category.find();
         res.json({success:true,data:category})
+    },
+    listExpense: async(req,res,nex)=>{
+        const category = await Category.find({type:'EXPENSE'})
+        res.json({success:true,data:category})
+    },
+    listIncome: async (req,res,next)=>{
+        const category = await Category.find({type:'INCOME'})
+        res.json({success:true,data:category})
     }
 }
