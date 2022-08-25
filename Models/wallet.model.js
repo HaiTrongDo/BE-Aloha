@@ -16,6 +16,10 @@ const WalletSchema = new Schema({
     currency:{
         type: Schema.Types.ObjectId,
         ref: "Currency"
+    },
+    user:{
+        type: Schema.Types.ObjectId,
+        ref:"User"
     }
 
 
