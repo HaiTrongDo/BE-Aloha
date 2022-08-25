@@ -3,6 +3,7 @@ let express = require('express'),
 let iconController = require('../Controllers/wallet.controller');
 
 router.post('/add',iconController.addWallet);
-router.get('/render',iconController.renderWallet);
+router.post('/render',iconController.renderWallet);
+router.get('',iconController.render);
 
 module.exports = router;
