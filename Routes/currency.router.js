@@ -1,8 +1,7 @@
 let express = require('express'),
     router = express.Router();
-let iconController = require('../Controllers/icon.controller');
+let iconController = require('../Controllers/currency.controller');
 
-router.post('/add',iconController.add)
 router.get('',iconController.getAll)
 
 module.exports = router;

@@ -4,8 +4,10 @@ const path = require('path');
 const cors = require('cors')
 const auth = require('./Routes/auth.router');
 const icon = require('./Routes/icon.router');
+const currency = require('./Routes/currency.router');
 const wallet = require('./Routes/wallet.router');
 const category = require('./Routes/category.router');
+const myAccount =  require('./Routes/my-account.router')
 const connectDB = require('./config/db.config')
 const passport = require('passport');
 const bodyParser = require('body-parser');
@@ -33,7 +35,9 @@ app.get('/', function(req, res) {
 
 app.use('/auth', auth);
 app.use('/icon', icon);
+app.use('/currency', currency);
 app.use('/wallet', wallet);
+app.use('/my-account', myAccount);
 app.use('/transaction',transaction);
 app.use('/category',category);
 //middleware
