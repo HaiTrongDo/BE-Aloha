@@ -25,23 +25,15 @@ module.exports = {
             });
         }
     }),
-    signin: asyncWrapper(function (req, res) {
-        User.findOne({
-            email: req.body.email
-        }, async function (err, user) {
-            if (err) {
-                console.log(err)
-                throw err;
-            }
-            if (!user)
-                return res
-                    .status(400).json({success: false, message: 'wrong email or password'})
-            const passwordValid = await argon2.verify(user.password, req.body.password);
-            if (!passwordValid) return res.status(400).json({success: false, message: 'wrong email or password'})
-            //tra ve 1 token
-            let token = jwt.sign(user.toJSON(), process.env.SECRET_KEY);
-            res.json({success: true, token: 'JWT ' + token,userId:user._id});
-        })
+
+    signin: asyncWrapper(async function (req, res) {
+        let currentUser = await User.findOne({email: req.body.email})
+        if (!currentUser) return res.status(400).json({success: false, message: 'wrong email or password'})
+        const passwordValid = await argon2.verify(currentUser.password, req.body.password);
+        if (!passwordValid) return res.status(400).json({success: false, message: 'wrong email or password'})
+        let token = jwt.sign(currentUser.toJSON(), process.env.SECRET_KEY);
+        delete currentUser.password;
+        res.json({success: true, token: 'JWT ' + token,currentUser});
     }),
 
     changePassword: (async function (req, res) {
