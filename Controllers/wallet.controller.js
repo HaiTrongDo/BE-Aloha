@@ -1,9 +1,10 @@
 const Icon = require('../Models/icon.model');
 const Currency = require('../Models/currency.model');
 const Wallet = require('../Models/wallet.model');
+const asyncWrapper = require("../Middleware/async");
 
 module.exports = {
-    addWallet: async (req, res, next) => {
+    addWallet: asyncWrapper( async (req, res, next) => {
         const book = new Wallet({
             icon: req.body.icon,
             name: req.body.name,
@@ -17,15 +18,18 @@ module.exports = {
             }
             res.json({success: true, msg: 'Successful created new wallet.'});
         });
-    },
-    renderWallet: async (req, res, next) => {
+    }),
+    renderWallet:asyncWrapper( async (req, res, next) => {
         console.log(req.body)
         let wallets = await Wallet.find({user:req.body.userId}).populate([{path:'icon',select:['name','url']},{path:'currency',select:['name','url','code']},{path:'user',select:['email']}])
         res.json({success: true,data:wallets})
-    },
-    render: async (req, res, next) => {
-        console.log(req.body)
+    }),
+    render: asyncWrapper( async (req, res, next) => {
         let wallets = await Wallet.find().populate([{path:'icon',select:['name','url']},{path:'currency',select:['name','url','code']},{path:'user',select:['email']}])
         res.json({success: true,data:wallets})
-    },
+    }),
+    getDetail:asyncWrapper( async (req,res)=>{
+        let wallet = await Wallet.findOne({_id:req.body.walletId}).populate([{path:'icon',select:['name','url']},{path:'currency',select:['name','url','code']},{path:'user',select:['email']}])
+        res.json({success: true,data:wallet})
+    })
 }
