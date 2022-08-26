@@ -5,17 +5,17 @@ let jwt = require('jsonwebtoken');
 let User = require("../Models/user.model");
 const asyncWrapper = require("../Middleware/async");
 
+const  defaultAvatar= "https://firebasestorage.googleapis.com/v0/b/aloha-money.appspot.com/o/DefaultUser.jpg?alt=media&token=58615f07-c33a-42f7-aa11-43b9d8170593"
 
 module.exports = {
 
     signup: asyncWrapper(async function (req, res) {
-        console.log(req.body);
         if (!req.body.email || !req.body.password) {
             res.status(401).json({success: false, msg: 'Please pass username and password.'});
         } else {
             const hashPassword = await argon2.hash(req.body.password)
             let newUser = new User({
-                email: req.body.email, password: hashPassword
+                email: req.body.email, password: hashPassword, avatarUrl:defaultAvatar
             });
             await newUser.save(function (err) {
                 if (err) {
