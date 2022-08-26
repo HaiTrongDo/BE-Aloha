@@ -19,9 +19,9 @@ const UserSchema = new Schema({
     avatarUrl: {
         type: String
     },
-    fromThirdPartyAuth: {
-        type:Boolean,
-        default: false
+    uid: {
+        type:String,
+        optional: true,
     },
     phone:{
         type: String,
