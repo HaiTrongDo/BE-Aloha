@@ -73,5 +73,4 @@ module.exports = {
         let token = jwt.sign(JSON.stringify(req.body), process.env.SECRET_KEY);
         res.status(200).json({success: true, token: 'JWT ' + token, msg:"Login successful", currentUser});
     }),
-
 };
