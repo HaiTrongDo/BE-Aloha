@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const TransactionSchema= new Schema({
     wallet:{
-        type:String,
+        type:Schema.Types.ObjectId,
         ref:'wallet',
         require:true
     },
@@ -12,12 +12,12 @@ const TransactionSchema= new Schema({
         require:true
     },
     category:{
-        type:String,
+        type:Schema.Types.ObjectId,
         ref:'category',
         require:true
     },
     date:{
-        type:Date,
+        type:String,
         require:true
     },
     note:{
