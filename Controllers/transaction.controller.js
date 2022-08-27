@@ -8,21 +8,26 @@ module.exports={
             wallet:req.body.wallet,
             amount:req.body.amount,
             category:req.body.category,
-            date:new Date().toLocaleDateString(),
+            date:req.body.date,
             note:req.body.note
         })
         await transaction.save(err => {
             if(err){
                 throw err
             }
+
             res.status(200).json({success:true,data:transaction})
         })
     },
-    renderTransaction: async (req,res,next)=>{
+    listTransaction: async (req,res,next)=>{
         const transaction = await Transaction.find()
         res.json({success:true,data:transaction})
     },
-    renderCategory: async (req,res,next)=>{
+    listTransactionUser: async (req,res,next)=>{
+      const list = await Transaction.find({user:req.body.user}).populate('category')
+        res.json({success:true,data:list})
+    },
+    listCategory: async (req,res,next)=>{
         const category = await Category.find();
         res.json({success:true,data:category})
     },
@@ -33,5 +38,6 @@ module.exports={
     listIncome: async (req,res,next)=>{
         const category = await Category.find({type:'INCOME'})
         res.json({success:true,data:category})
-    }
+    },
+
 }
