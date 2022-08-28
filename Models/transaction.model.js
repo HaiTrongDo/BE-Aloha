@@ -13,7 +13,7 @@ const TransactionSchema= new Schema({
     },
     category:{
         type:Schema.Types.ObjectId,
-        ref:'category',
+        ref:'Category',
         require:true
     },
     date:{
@@ -23,7 +23,11 @@ const TransactionSchema= new Schema({
     note:{
         type:String,
         require:false
+    },
+    user:{
+        type: Schema.Types.ObjectId,
+        ref:"User"
     }
 },{timestamps: true})
 
-module.exports=mongoose.model('transaction',TransactionSchema)
+module.exports=mongoose.model('Transaction',TransactionSchema)

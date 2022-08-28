@@ -38,7 +38,7 @@ const UserSchema = new Schema({
     wallet:{
         type: [],
         ref: 'wallet'
-    }
+    },
 },{timestamps: true})
 
 module.exports = mongoose.model('User', UserSchema);

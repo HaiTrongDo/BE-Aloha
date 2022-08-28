@@ -9,7 +9,8 @@ module.exports={
             amount:req.body.amount,
             category:req.body.category,
             date:req.body.date,
-            note:req.body.note
+            note:req.body.note,
+            user:req.body.user
         })
         await transaction.save(err => {
             if(err){
@@ -39,5 +40,17 @@ module.exports={
         const category = await Category.find({type:'INCOME'})
         res.json({success:true,data:category})
     },
+    editTransaction:async (req,res,next)=>{
+        const transaction= {
+            wallet:req.body.wallet,
+            amount:req.body.amount,
+            category:req.body.category,
+            date:req.body.date,
+            note:req.body.note,
+            user:req.body.user
+        }
+        await Transaction.findOneAndUpdate({_id:req.body.id},transaction)
+        res.json({success:true,data:transaction})
+    }
 
 }
