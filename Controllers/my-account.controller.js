@@ -5,7 +5,6 @@ module.exports = {
 
     getCurrentUserInfo: asyncWrapper(async (req, res, next) => {
         let getCurrentUserInfo = await User.findOne({_id: req.body.userId})
-        console.log(getCurrentUserInfo);
         res.status(200).json(getCurrentUserInfo);
     }),
 

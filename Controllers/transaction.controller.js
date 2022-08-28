@@ -4,6 +4,7 @@ const Category = require('../Models/category.model')
 
 module.exports={
     addTransaction: async(req,res,next)=>{
+        console.log(req.body);
         const transaction= new Transaction({
             wallet:req.body.wallet,
             amount:req.body.amount,
@@ -14,7 +15,7 @@ module.exports={
         })
         await transaction.save(err => {
             if(err){
-                throw err
+                console.log(err.message);
             }
 
             res.status(200).json({success:true,data:transaction})
