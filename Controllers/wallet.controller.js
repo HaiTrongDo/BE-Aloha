@@ -32,14 +32,5 @@ module.exports = {
         let wallet = await Wallet.findOne({_id:req.body.walletId}).populate([{path:'icon',select:['name','url']},{path:'currency',select:['name','url','code']},{path:'user',select:['email']}])
         res.json({success: true,data:wallet})
     }),
-    updateWallet:asyncWrapper( async (req,res)=>{
-        const walletUpdateData = req.body.dataUpdateWallet
-        console.log(walletUpdateData)
-        let wallet = await Wallet.findOneAndUpdate({_id:walletUpdateData._id},walletUpdateData).populate([{path:'icon',select:['name','url']},{path:'currency',select:['name','url','code']},{path:'user',select:['email']}])
-        res.json({success: true, msg: 'Successful update wallet.'});
-    }),
-    deleteWallet:asyncWrapper( async (req,res)=>{
-        console.log(req.body)
-        await Wallet.findOneAndRemove({_id:req.body.walletId}).populate([{path:'icon',select:['name','url']},{path:'currency',select:['name','url','code']},{path:'user',select:['email']}])
-        res.json({success: true, msg: 'Successful delete wallet.'});    }),
+    
 }
