@@ -1,9 +1,10 @@
 const Transaction = require('../Models/transaction.model')
 const Icon = require('../Models/icon.model');
 const Category = require('../Models/category.model')
+const asyncWrapper = require("../Middleware/async");
 
 module.exports = {
-    addTransaction: async (req, res, next) => {
+    addTransaction:asyncWrapper(async (req, res, next) => {
         const transaction = new Transaction({
             wallet: req.body.wallet,
             amount: req.body.amount,
@@ -19,7 +20,7 @@ module.exports = {
 
             res.status(200).json({success: true, data: transaction})
         })
-    },
+    }),
     listTransaction: async (req, res, next) => {
         const transaction = await Transaction.find()
         res.json({success: true, data: transaction})
@@ -43,8 +44,9 @@ module.exports = {
         const category = await Category.find({type: 'INCOME'})
         res.json({success: true, data: category})
     },
-    editTransaction: async (req, res, next) => {
+    editTransaction: asyncWrapper(async (req, res, next) => {
         const transaction = {
+            _id:req.body.id,
             wallet: req.body.wallet,
             amount: req.body.amount,
             category: req.body.category,
@@ -54,11 +56,11 @@ module.exports = {
         }
         await Transaction.findOneAndUpdate({_id: req.body.id}, transaction)
         res.json({success: true, data: transaction, msg: "Successfully Edit Transaction"})
-    },
-    deleteTransaction: async (req, res, next) => {
+    }),
+    deleteTransaction: asyncWrapper(async (req, res, next) => {
         await Transaction.deleteOne({_id: req.body.id})
         res.json({success: true, msg: "Successfully Delete Transaction"})
-    },
+    }),
 
 
 }
