@@ -21,8 +21,11 @@ module.exports = {
             res.status(200).json({success: true, data: transaction})
         })
     }),
-    listTransaction: async (req, res, next) => {
-        const transaction = await Transaction.find()
+    listTransactionWallet: async (req, res, next) => {
+        const transaction = await Transaction.find({user:req.body.user,wallet:req.body.wallet}).populate([{path: 'category'}, {
+            path: 'wallet',
+            populate: {path: 'icon'}
+        }])
         res.json({success: true, data: transaction})
     },
     listTransactionUser: async (req, res, next) => {
