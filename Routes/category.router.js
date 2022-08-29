@@ -12,10 +12,10 @@ router.route('/')
 router.route('/add')
     .post(verifyToken,categoryController.addCategory);
 
-router.route('/:id')
+router.route('/update')
     .put(verifyToken,categoryController.updateCategory);
 
 router.route('/delete')
-    .delete(verifyToken,categoryController.deleteCategory);
+    .post(categoryController.deleteCategory);
 
 module.exports = router;
