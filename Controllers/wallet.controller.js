@@ -5,18 +5,18 @@ const asyncWrapper = require("../Middleware/async");
 
 module.exports = {
     addWallet: asyncWrapper(async (req, res, next) => {
-        const book = new Wallet({
+        const wallet = new Wallet({
             icon: req.body.icon,
             name: req.body.name,
             initial: req.body.initial,
             currency: req.body.currency,
             user: req.body.user
         })
-        await book.save(err => {
+        await wallet.save(err => {
             if (err) {
                 return res.json({success: false, msg: err.message});
             }
-            res.json({success: true, msg: 'Successful created new wallet.'});
+            res.json({success: true, msg: 'Successful created new wallet.',walletId:wallet._id});
         });
     }),
     renderWallet: asyncWrapper(async (req, res, next) => {
@@ -58,7 +58,6 @@ module.exports = {
     }),
     updateBalance: asyncWrapper(async (req, res) => {
         const walletUpdateData = req.body
-        console.log(walletUpdateData)
         await Wallet.findOneAndUpdate({_id: walletUpdateData.walletId}, {initial:Number(walletUpdateData.initial)})
         res.json({success: true, msg: 'Successful update initial'});
     }),
