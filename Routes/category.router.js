@@ -16,6 +16,6 @@ router.route('/update')
     .put(verifyToken,categoryController.updateCategory);
 
 router.route('/delete')
-    .post(categoryController.deleteCategory);
+    .post(verifyToken,categoryController.deleteCategory);
 
 module.exports = router;

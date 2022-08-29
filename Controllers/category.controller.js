@@ -17,7 +17,8 @@ module.exports = {
                 name,
                 icon
             })
-            await newCategory.save()
+            const data1 = await newCategory.save()
+            console.log(data1._id)
             data = await Category.find()
             res.status(200).json({success: true, message: 'them moi thanh cong', data})
         } catch (err) {
