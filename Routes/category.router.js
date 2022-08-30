@@ -7,10 +7,13 @@ const verifyToken = require("../Middleware/auth.middleware");
 
 
 router.route('/')
-    .get(verifyToken, categoryController.showListCategory);
+    .post(verifyToken,categoryController.showListCategory);
 
 router.route('/add')
     .post(verifyToken,categoryController.addCategory);
+
+router.route('/add-category-default')
+    .post(verifyToken,categoryController.addCategoryDefaultOfWallet);
 
 router.route('/update')
     .put(verifyToken,categoryController.updateCategory);
