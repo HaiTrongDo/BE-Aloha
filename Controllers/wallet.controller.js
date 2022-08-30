@@ -20,7 +20,7 @@ module.exports = {
         });
     }),
     renderWallet:asyncWrapper( async (req, res, next) => {
-        console.log(req.body)
+    
         let wallets = await Wallet.find({user:req.body.userId}).populate([{path:'icon',select:['name','url']},{path:'currency',select:['name','url','code']},{path:'user',select:['email']}])
         res.json({success: true,data:wallets})
     }),
