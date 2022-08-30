@@ -7,6 +7,14 @@ module.exports = {
         data = await Category.find({wallet: idWallet})
         res.status(200).json({success: true, data})
     }),
+    listExpense: async (req, res, nex) => {
+        const category = await Category.find({type: 'EXPENSE',wallet:req.body.wallet})
+        res.json({success: true, data: category})
+    },
+    listIncome: async (req, res, next) => {
+        const category = await Category.find({type: 'INCOME',wallet:req.body.wallet})
+        res.json({success: true, data: category})
+    },
 
     addCategory: async (req, res) => {
         const {type, name, icon,wallet} = req.body;
