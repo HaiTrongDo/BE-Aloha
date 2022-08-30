@@ -15,7 +15,13 @@ const CategorySchema=new Schema({
     icon:{
         type:String,
         ref:'Icon'
+    },
+    wallet:{
+        type: Schema.Types.ObjectId,
+        ref:"Wallet"
     }
 },{timestamps: true})
+
+
 
 module.exports=mongoose.model('Category',CategorySchema)

@@ -4,7 +4,7 @@ const Category = require('../Models/category.model')
 const asyncWrapper = require("../Middleware/async");
 
 module.exports = {
-    addTransaction:asyncWrapper(async (req, res, next) => {
+    addTransaction: asyncWrapper(async (req, res, next) => {
         const transaction = new Transaction({
             wallet: req.body.wallet,
             amount: req.body.amount,
@@ -21,8 +21,14 @@ module.exports = {
             res.status(200).json({success: true, data: transaction})
         })
     }),
-    listTransaction: async (req, res, next) => {
-        const transaction = await Transaction.find()
+    listTransactionWallet: async (req, res, next) => {
+        const transaction = await Transaction.find({
+            user: req.body.user,
+            wallet: req.body.wallet
+        }).populate([{path: 'category'}, {
+            path: 'wallet',
+            populate: {path: 'icon'}
+        }])
         res.json({success: true, data: transaction})
     },
     listTransactionUser: async (req, res, next) => {
@@ -46,7 +52,7 @@ module.exports = {
     },
     editTransaction: asyncWrapper(async (req, res, next) => {
         const transaction = {
-            _id:req.body.id,
+            _id: req.body.id,
             wallet: req.body.wallet,
             amount: req.body.amount,
             category: req.body.category,
@@ -61,6 +67,32 @@ module.exports = {
         await Transaction.deleteOne({_id: req.body.id})
         res.json({success: true, msg: "Successfully Delete Transaction"})
     }),
+    sortTransactionByCategory: asyncWrapper(async (req, res, next) => {
+        const result = await Transaction
+            .aggregate()
+            .lookup({
+                from:'category',
+                localField:'category._id',
+                foreignField:'_id',
+                as:'asdasd'
+            })
+            .group({_id: '$category'})
 
+        res.json({success: true, data: result})
+    }),
+    searchTransaction: asyncWrapper(async (req, res, nex) => {
+        let search = {
+            user: req.body.userId,
+        }
+        req.body?.wallet && (search.wallet=req.body.wallet)
+        req.body?.category?._id && (search.category=req.body.category)
+        req.body?.date && (search.date=req.body.date)
+        req.body?.note && (search.note=req.body.note)
+        const result =await Transaction.find(search).populate([{path: 'category'}, {
+            path: 'wallet',
+            populate: {path: 'icon'}
+        }])
+        res.json({success: true, data: result})
+    }),
 
 }

@@ -36,8 +36,8 @@ const UserSchema = new Schema({
         optional: true,
     },
     wallet:{
-        type: [],
-        ref: 'wallet'
+        type: Schema.Types.Array,
+        ref: 'Wallet'
     },
 },{timestamps: true})
 
