@@ -28,14 +28,14 @@ module.exports = {
         }).populate([{path: 'category'}, {
             path: 'wallet',
             populate: {path: 'icon'}
-        }])
+        }]).sort({date: -1})
         res.json({success: true, data: transaction})
     },
     listTransactionUser: async (req, res, next) => {
         const list = await Transaction.find({user: req.body.user}).populate([{path: 'category'}, {
             path: 'wallet',
             populate: {path: 'icon'}
-        }])
+        }]).sort({date: -1})
         res.json({success: true, data: list})
     },
     listCategory: async (req, res, next) => {
@@ -71,27 +71,28 @@ module.exports = {
         const result = await Transaction
             .aggregate()
             .lookup({
-                from:'category',
-                localField:'category._id',
-                foreignField:'_id',
-                as:'asdasd'
+                from: 'category',
+                localField: 'category._id',
+                foreignField: '_id',
+                as: 'asdasd'
             })
             .group({_id: '$category'})
 
         res.json({success: true, data: result})
     }),
-    searchTransaction: asyncWrapper(async (req, res, nex) => {
+    searchTransaction: asyncWrapper(async (req, res, next) => {
         let search = {
             user: req.body.userId,
         }
-        req.body?.wallet && (search.wallet=req.body.wallet)
-        req.body?.category?._id && (search.category=req.body.category)
-        req.body?.date && (search.date=req.body.date)
-        req.body?.note && (search.note=req.body.note)
-        const result =await Transaction.find(search).populate([{path: 'category'}, {
-            path: 'wallet',
-            populate: {path: 'icon'}
-        }])
+        req.body?.wallet && (search.wallet = req.body.wallet)
+        req.body?.category?._id && (search.category = req.body.category)
+        // req.body?.date && (search.date = req.body.date)
+        req.body?.note && (search.note = req.body.note)
+        const result = await Transaction.find(search)
+            .populate([{path: 'category'}, {
+                path: 'wallet',
+                populate: {path: 'icon'}
+            }])
         res.json({success: true, data: result})
     }),
 
