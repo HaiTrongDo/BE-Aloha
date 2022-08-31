@@ -3,6 +3,8 @@ const Icon = require('../Models/icon.model');
 const Category = require('../Models/category.model')
 const asyncWrapper = require("../Middleware/async");
 
+
+
 module.exports = {
     addTransaction: asyncWrapper(async (req, res, next) => {
         const transaction = new Transaction({
@@ -81,18 +83,26 @@ module.exports = {
         res.json({success: true, data: result})
     }),
     searchTransaction: asyncWrapper(async (req, res, nex) => {
-        let search = {
-            user: req.body.userId,
-        }
+        let search = {user: req.body.userId,}
         req.body?.wallet && (search.wallet=req.body.wallet)
         req.body?.category?._id && (search.category=req.body.category)
-        req.body?.date && (search.date=req.body.date)
-        req.body?.note && (search.note=req.body.note)
-        const result =await Transaction.find(search).populate([{path: 'category'}, {
-            path: 'wallet',
-            populate: {path: 'icon'}
+        req.body?.note && (search.note=new RegExp(req.body.note,'ig'))
+        req.body?.date && (search.date={
+                $gte: new Date(req.body.date.split("->")[0]),
+                $lt: new Date(req.body.date.split("->")[1])
+        })
+        const result = await Transaction
+            .find(search)
+            .populate([
+                {path: 'category'},
+                {path: 'wallet', populate: {path: 'icon'}
         }])
         res.json({success: true, data: result})
     }),
+
+    getLastMonthTransaction: asyncWrapper(async (req, res, next) => {
+        console.log("here")
+        res.end()
+    })
 
 }
