@@ -2,7 +2,7 @@ const Category = require('../Models/category.model')
 const asyncWrapper = require("../Middleware/async");
 module.exports = {
     showListCategory: asyncWrapper(async (req, res) => {
-        data = await Category.find()
+        const data = await Category.find()
         res.status(200).json({success: true, data})
     }),
 
