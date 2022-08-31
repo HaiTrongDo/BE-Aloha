@@ -20,6 +20,7 @@ module.exports = {
             res.json({success: true, msg: 'Successful created new wallet.',walletId:wallet._id});
         });
     }),
+
     renderWallet: asyncWrapper(async (req, res, next) => {
         let wallets = await Wallet.find({user: req.body.userId}).populate([{
             path: 'icon',

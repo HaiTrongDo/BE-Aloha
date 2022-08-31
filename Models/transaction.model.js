@@ -17,7 +17,7 @@ const TransactionSchema= new Schema({
         require:true
     },
     date:{
-        type:String,
+        type:Date,
         require:true
     },
     note:{
