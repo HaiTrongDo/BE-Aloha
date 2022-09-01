@@ -12,6 +12,7 @@ router.get('/category/expense',transactionController.listExpense)
 router.get('/category/income',transactionController.listIncome)
 router.post('/sort',transactionController.sortTransactionByCategory)
 router.post('/search',transactionController.searchTransaction)
+router.post('/search/last-month-transaction',transactionController.getLastMonthTransaction)
 
 
 module.exports=router;
