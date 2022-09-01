@@ -3,8 +3,6 @@ const Icon = require('../Models/icon.model');
 const Category = require('../Models/category.model')
 const asyncWrapper = require("../Middleware/async");
 
-
-
 module.exports = {
     addTransaction: asyncWrapper(async (req, res, next) => {
         const transaction = new Transaction({
