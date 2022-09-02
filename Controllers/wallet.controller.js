@@ -57,8 +57,8 @@ module.exports = {
             .populate([{path: 'icon', select: ['name', 'url']},
                 {path: 'currency', select: ['name', 'url', 'code']},
                 {path: 'user', select: ['email']}])
-        await Transaction.findOneAndRemove({wallet:req.body.walletId})
-        await Category.findOneAndRemove({wallet:req.body.walletId})
+        await Transaction.deleteMany({wallet:req.body.walletId})
+        await Category.deleteMany({wallet:req.body.walletId})
         res.json({success: true, msg: 'Successful delete wallet.'});
     }),
     updateBalance: asyncWrapper(async (req, res) => {
