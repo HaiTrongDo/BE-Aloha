@@ -3,6 +3,7 @@ const Icon = require('../Models/icon.model');
 const Category = require('../Models/category.model')
 const asyncWrapper = require("../Middleware/async");
 
+
 module.exports = {
     addTransaction: asyncWrapper(async (req, res, next) => {
         const transaction = new Transaction({
@@ -88,11 +89,12 @@ module.exports = {
         req.body?.category?._id && (search.category = req.body.category)
         // req.body?.date && (search.date = req.body.date)
         req.body?.note && (search.note = req.body.note)
+
         const result = await Transaction.find(search)
             .populate([{path: 'category'}, {
                 path: 'wallet',
                 populate: {path: 'icon'}
-            }])
+            }]).sort({date: -1})
         res.json({success: true, data: result})
     }),
 
