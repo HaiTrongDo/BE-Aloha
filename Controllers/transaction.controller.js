@@ -2,6 +2,7 @@ const Transaction = require('../Models/transaction.model')
 const Icon = require('../Models/icon.model');
 const Category = require('../Models/category.model')
 const asyncWrapper = require("../Middleware/async");
+const mongoose = require("mongoose");
 
 module.exports = {
     addTransaction: asyncWrapper(async (req, res, next) => {
@@ -11,7 +12,7 @@ module.exports = {
             category: req.body.category,
             date: req.body.date,
             note: req.body.note,
-            user: req.body.user
+            user: req.body.user,
         })
         await transaction.save(err => {
             if (err) {
@@ -71,10 +72,10 @@ module.exports = {
         const result = await Transaction
             .aggregate()
             .lookup({
-                from:'category',
-                localField:'category._id',
-                foreignField:'_id',
-                as:'asdasd'
+                from: 'category',
+                localField: 'category._id',
+                foreignField: '_id',
+                as: 'asdasd'
             })
             .group({_id: '$category'})
 
@@ -82,25 +83,52 @@ module.exports = {
     }),
     searchTransaction: asyncWrapper(async (req, res, nex) => {
         let search = {user: req.body.userId,}
-        req.body?.wallet && (search.wallet=req.body.wallet)
-        req.body?.category?._id && (search.category=req.body.category)
-        req.body?.note && (search.note=new RegExp(req.body.note,'ig'))
-        req.body?.date && (search.date={
-                $gte: new Date(req.body.date.split("->")[0]),
-                $lt: new Date(req.body.date.split("->")[1])
+        req.body?.wallet?.icon?._id && (search.wallet = req.body.wallet)
+        req.body?.category?._id && (search.category._id = req.body.category._id)
+        req.body?.note && (search.note = new RegExp(req.body.note, 'ig'))
+        req.body?.date && (search.date = {
+            $gte: new Date(req.body.date.split("->")[0]),
+            $lt: new Date(req.body.date.split("->")[1])
         })
-        const result = await Transaction
+        const userTransResult = await Transaction
             .find(search)
             .populate([
                 {path: 'category'},
-                {path: 'wallet', populate: {path: 'icon'}
-        }])
-        res.json({success: true, data: result})
+                {
+                    path: 'wallet', populate: {path: 'icon'}
+                }])
+
+        res.json({success: true, data: userTransResult})
     }),
 
     getLastMonthTransaction: asyncWrapper(async (req, res, next) => {
-        console.log("here")
-        res.end()
+
+        const TestData = await Transaction
+            .aggregate([
+                {$match:{user:new mongoose.Types.ObjectId(req.body.userId) }}])
+            .facet({
+                transactionData:[ {$group:{
+                        _id: {"date":"$date",
+                            "category":"$category.type"},
+                        total:{$sum:"$amount"},}}],
+                dataPieChartExpense:[ {$group:{
+                        _id:"$category.type",
+                        total:{$sum:"$amount"},}}],
+                // dataPieChartIncome:[ {$group:{
+                //         _id:"$category",
+                //         total:{$sum:"$amount"},}}]
+            })
+
+
+        console.log(TestData[0].transactionData);
+        // console.log(TestData[0].dataPieChartExpense);
+        // console.log(TestData[0].dataPieChartIncome);
+
+
+        res.json({success: true, data: TestData})
     })
 
 }
+
+
+
