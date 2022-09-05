@@ -101,31 +101,45 @@ module.exports = {
         res.json({success: true, data: userTransResult})
     }),
 
-    getLastMonthTransaction: asyncWrapper(async (req, res, next) => {
-
-        const TestData = await Transaction
+    getReportData: asyncWrapper(async (req, res, next) => {
+        const data = await Transaction
             .aggregate([
-                {$match:{user:new mongoose.Types.ObjectId(req.body.userId) }}])
+                {$match: {user: new mongoose.Types.ObjectId(req.body.userId)}},
+                ])
             .facet({
-                transactionData:[ {$group:{
-                        _id: {"date":"$date",
-                            "category":"$category.type"},
-                        total:{$sum:"$amount"},}}],
-                dataPieChartExpense:[ {$group:{
-                        _id:"$category.type",
-                        total:{$sum:"$amount"},}}],
-                // dataPieChartIncome:[ {$group:{
-                //         _id:"$category",
-                //         total:{$sum:"$amount"},}}]
+                rawChartData:[{ $group: {   _id: {"date": "$date", "category": "$category.type"},
+                                            total: {$sum: "$amount"},
+                                        }},],
+                rawDataPieChart:[{ $group: {   _id: {"name": "$category.name", "category": "$category.type"},
+                                            total: {$sum: "$amount"},
+                                        }},]
             })
 
 
-        console.log(TestData[0].transactionData);
-        // console.log(TestData[0].dataPieChartExpense);
-        // console.log(TestData[0].dataPieChartIncome);
+        let transactionData = []
+        data[0].rawChartData.forEach((eachResult, index) => {
+            let checkingDateIndex = transactionData.findIndex(item => item?.XAxis === eachResult._id.date.toLocaleDateString());
+            if (checkingDateIndex === -1) {
+                transactionData.push({XAxis: eachResult._id.date.toLocaleDateString(), [eachResult._id.category]: eachResult.total})
+            } else {
+                transactionData[checkingDateIndex] = {
+                    ...transactionData[checkingDateIndex],
+                    [eachResult._id.category]: eachResult.total
+                }
+            }
+        })
+        transactionData.sort((a, b) => new Date(a.XAxis) - new Date(b.XAxis));
 
+    let rawDataPieChartExpense = data[0].rawDataPieChart.filter((data=>data._id.category === "EXPENSE"))
+     let dataPieChartExpense =[]
+         rawDataPieChartExpense.forEach(item =>dataPieChartExpense.push({...item._id, value:item.total}))
+    let rawDataPieChartIncome= data[0].rawDataPieChart.filter((data=>data._id.category === "INCOME"))
+        let dataPieChartIncome=[]
+        rawDataPieChartIncome.forEach(item =>dataPieChartIncome.push({...item._id, value:item.total}))
+        console.log(data[0].rawDataPieChart);
+        console.log(dataPieChartIncome,dataPieChartExpense);
 
-        res.json({success: true, data: TestData})
+        res.json({success: true, transactionData,dataPieChartIncome,dataPieChartExpense})
     })
 
 }
