@@ -20,4 +20,7 @@ router.route('/change-password')
 router.route('/forgot-password')
     .post(authenticationController.forgotPassword);
 
+router.route('/reset-password')
+    .post(authenticationController.resetPassword);
+
 module.exports = router;
