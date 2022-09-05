@@ -88,7 +88,7 @@ module.exports = {
         req.body?.note && (search.note=new RegExp(req.body.note,'ig'))
         req.body?.date && (search.date={
                 $gte: new Date(req.body.date.split("->")[0]),
-                $lte: new Date(req.body.date.split("->")[1])
+                $lt: new Date(new Date(req.body.date.split('->')[1]).getTime()+(24*3600*1000))
         })
         const result = await Transaction
             .find(search)
