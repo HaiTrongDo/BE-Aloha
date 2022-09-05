@@ -12,7 +12,7 @@ module.exports = {
             category: req.body.category,
             date: req.body.date,
             note: req.body.note,
-            user: req.body.user,
+            user: req.body.user
         })
         await transaction.save(err => {
             if (err) {
@@ -77,10 +77,10 @@ module.exports = {
         const result = await Transaction
             .aggregate()
             .lookup({
-                from: 'category',
-                localField: 'category._id',
-                foreignField: '_id',
-                as: 'asdasd'
+                from:'category',
+                localField:'category._id',
+                foreignField:'_id',
+                as:'asdasd'
             })
             .group({_id: '$category'})
 
@@ -111,7 +111,7 @@ module.exports = {
         const data = await Transaction
             .aggregate([
                 {$match: {user: new mongoose.Types.ObjectId(req.body.userId)}},
-            ])
+                ])
             .facet({
                 rawChartData: [{
                     $group: {
@@ -126,6 +126,38 @@ module.exports = {
                     }
                 },]
             })
-    }),
+
+        console.log(data[0].rawChartData);
+
+        let transactionData = []
+        data[0].rawChartData.forEach((eachResult, index) => {
+            let checkingDateIndex = transactionData.findIndex(item => item?.XAxis === eachResult._id.date.toLocaleDateString());
+            if (checkingDateIndex === -1) {
+                transactionData.push({
+                    XAxis: eachResult._id.date.toLocaleDateString(),
+                    [eachResult._id.category]: eachResult.total
+                })
+            } else {
+                transactionData[checkingDateIndex] = {
+                    ...transactionData[checkingDateIndex],
+                    [eachResult._id.category]: eachResult.total
+                }
+            }
+        })
+        transactionData.sort((a, b) => new Date(a.XAxis) - new Date(b.XAxis));
+
+        let rawDataPieChartExpense = data[0].rawDataPieChart.filter((data => data._id.category === "EXPENSE"))
+        let dataPieChartExpense = []
+        rawDataPieChartExpense.forEach(item => dataPieChartExpense.push({...item._id, value: item.total}))
+        let rawDataPieChartIncome = data[0].rawDataPieChart.filter((data => data._id.category === "INCOME"))
+        let dataPieChartIncome = []
+        rawDataPieChartIncome.forEach(item => dataPieChartIncome.push({...item._id, value: item.total}))
+
+
+        res.json({success: true, transactionData, dataPieChartIncome, dataPieChartExpense})
+    })
 
 }
+
+
+
