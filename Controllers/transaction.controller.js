@@ -26,17 +26,22 @@ module.exports = {
         const transaction = await Transaction.find({
             user: req.body.user,
             wallet: req.body.wallet
-        }).populate([{path: 'category'}, {
-            path: 'wallet',
-            populate: {path: 'icon'}
-        }])
+        }).populate([{path: 'category'},
+            {
+                path: 'wallet',
+                populate: [{path: 'icon'}, {path: 'currency'}]
+            }
+        ]).sort({date: -1})
         res.json({success: true, data: transaction})
     },
     listTransactionUser: async (req, res, next) => {
-        const list = await Transaction.find({user: req.body.user}).populate([{path: 'category'}, {
-            path: 'wallet',
-            populate: {path: 'icon'}
-        }])
+        const list = await Transaction.find({user: req.body.user})
+            .populate([{path: 'category'},
+                {
+                    path: 'wallet',
+                    populate: [{path: 'icon'}, {path: 'currency'}]
+                }
+            ]).sort({date: -1})
         res.json({success: true, data: list})
     },
     listCategory: async (req, res, next) => {
@@ -72,10 +77,10 @@ module.exports = {
         const result = await Transaction
             .aggregate()
             .lookup({
-                from: 'category',
-                localField: 'category._id',
-                foreignField: '_id',
-                as: 'asdasd'
+                from:'category',
+                localField:'category._id',
+                foreignField:'_id',
+                as:'asdasd'
             })
             .group({_id: '$category'})
 
@@ -95,7 +100,7 @@ module.exports = {
             .populate([
                 {path: 'category'},
                 {
-                    path: 'wallet', populate: {path: 'icon'}
+                    path: 'wallet', populate: [{path: 'icon'}, {path: 'currency'}]
                 }])
             .sort({date: -1})
 
@@ -106,7 +111,7 @@ module.exports = {
         const data = await Transaction
             .aggregate([
                 {$match: {user: new mongoose.Types.ObjectId(req.body.userId)}},
-            ])
+                ])
             .facet({
                 rawChartData: [{
                     $group: {
