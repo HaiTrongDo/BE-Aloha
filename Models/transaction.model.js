@@ -12,12 +12,11 @@ const TransactionSchema= new Schema({
         require:true
     },
     category:{
-        type:Schema.Types.ObjectId,
-        ref:'Category',
+        type:Object,
         require:true
     },
     date:{
-        type:String,
+        type:Date,
         require:true
     },
     note:{

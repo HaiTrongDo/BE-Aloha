@@ -35,12 +35,11 @@ module.exports = {
         const passwordValid = await argon2.verify(currentUser.password, req.body.password);
         if (!passwordValid) return res.status(400).json({success: false, message: 'wrong email or password'})
         let token = jwt.sign(currentUser.toJSON(), process.env.SECRET_KEY);
-        delete currentUser.password;
-        res.json({success: true, token: 'JWT ' + token, currentUser});
+        const {password, ...userInfor}= currentUser._doc;
+        res.json({success: true, token: 'JWT ' + token,currentUser:userInfor});
     }),
 
     changePassword: (async function (req, res) {
-        console.log('thay doi pass')
         const {oldPassword, newPassword, confirmPassword} = req.body;
         if (!oldPassword) return res
             .status(400)
@@ -70,8 +69,12 @@ module.exports = {
     signInWithFireBase: asyncWrapper(async function (req, res, next) {
         let currentUser = await User.findOne({uid: req.body.uid})
         if (!currentUser) {
-            let newUser = new User({...req.body});
-            currentUser = await newUser.save()
+            try{
+                let newUser = new User({...req.body});
+                currentUser = await newUser.save()
+            }  catch (err) {
+                console.log(err.message)}
+
         }
         let token = jwt.sign(JSON.stringify(req.body), process.env.SECRET_KEY);
         res.status(200).json({success: true, token: 'JWT ' + token, msg: "Login successful", currentUser});

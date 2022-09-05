@@ -21,4 +21,10 @@ router.route('/update')
 router.route('/delete')
     .post(verifyToken,categoryController.deleteCategory);
 
+router.route('/expense')
+    .post(categoryController.listExpense);
+
+router.route('/income')
+    .post(categoryController.listIncome);
+
 module.exports = router;

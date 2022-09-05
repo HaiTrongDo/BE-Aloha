@@ -1,7 +1,8 @@
-const Icon = require('../Models/icon.model');
-const Currency = require('../Models/currency.model');
 const Wallet = require('../Models/wallet.model');
 const asyncWrapper = require("../Middleware/async");
+const Category = require('../Models/category.model')
+const Transaction = require('../Models/transaction.model')
+
 
 module.exports = {
     addWallet: asyncWrapper(async (req, res, next) => {
@@ -19,6 +20,7 @@ module.exports = {
             res.json({success: true, msg: 'Successful created new wallet.',walletId:wallet._id});
         });
     }),
+
     renderWallet: asyncWrapper(async (req, res, next) => {
         let wallets = await Wallet.find({user: req.body.userId}).populate([{
             path: 'icon',
@@ -49,11 +51,14 @@ module.exports = {
         res.json({success: true, msg: 'Successful update wallet.'});
     }),
     deleteWallet: asyncWrapper(async (req, res) => {
+        console.log(req.body)
 
         await Wallet.findOneAndRemove({_id: req.body.walletId})
             .populate([{path: 'icon', select: ['name', 'url']},
                 {path: 'currency', select: ['name', 'url', 'code']},
                 {path: 'user', select: ['email']}])
+        await Transaction.deleteMany({wallet:req.body.walletId})
+        await Category.deleteMany({wallet:req.body.walletId})
         res.json({success: true, msg: 'Successful delete wallet.'});
     }),
     updateBalance: asyncWrapper(async (req, res) => {
