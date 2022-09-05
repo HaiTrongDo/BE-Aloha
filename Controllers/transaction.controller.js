@@ -12,7 +12,7 @@ module.exports = {
             category: req.body.category,
             date: req.body.date,
             note: req.body.note,
-            user: req.body.user
+            user: req.body.user,
         })
         await transaction.save(err => {
             if (err) {
@@ -26,17 +26,22 @@ module.exports = {
         const transaction = await Transaction.find({
             user: req.body.user,
             wallet: req.body.wallet
-        }).populate([{path: 'category'}, {
-            path: 'wallet',
-            populate: {path: 'icon'}
-        }])
+        }).populate([{path: 'category'},
+            {
+                path: 'wallet',
+                populate: [{path: 'icon'}, {path: 'currency'}]
+            }
+        ]).sort({date: -1})
         res.json({success: true, data: transaction})
     },
     listTransactionUser: async (req, res, next) => {
-        const list = await Transaction.find({user: req.body.user}).populate([{path: 'category'}, {
-            path: 'wallet',
-            populate: {path: 'icon'}
-        }])
+        const list = await Transaction.find({user: req.body.user})
+            .populate([{path: 'category'},
+                {
+                    path: 'wallet',
+                    populate: [{path: 'icon'}, {path: 'currency'}]
+                }
+            ]).sort({date: -1})
         res.json({success: true, data: list})
     },
     listCategory: async (req, res, next) => {
@@ -72,10 +77,10 @@ module.exports = {
         const result = await Transaction
             .aggregate()
             .lookup({
-                from:'category',
-                localField:'category._id',
-                foreignField:'_id',
-                as:'asdasd'
+                from: 'category',
+                localField: 'category._id',
+                foreignField: '_id',
+                as: 'asdasd'
             })
             .group({_id: '$category'})
 
@@ -83,19 +88,19 @@ module.exports = {
     }),
     searchTransaction: asyncWrapper(async (req, res, nex) => {
         let search = {user: req.body.userId,}
-        req.body?.wallet && (search.wallet=req.body.wallet)
-        req.body?.category?._id && (search.category=req.body.category)
-        req.body?.note && (search.note=new RegExp(req.body.note,'ig'))
-        req.body?.date && (search.date={
-                $gte: new Date(req.body.date.split("->")[0]),
-                $lt: new Date(new Date(req.body.date.split('->')[1]).getTime()+(24*3600*1000))
+        req.body?.wallet && (search.wallet = req.body.wallet)
+        req.body?.category?._id && (search.category = req.body.category)
+        req.body?.note && (search.note = new RegExp(req.body.note, 'ig'))
+        req.body?.date && (search.date = {
+            $gte: new Date(req.body.date.split("->")[0]),
+            $lt: new Date(new Date(req.body.date.split('->')[1]).getTime() + (24 * 3600 * 1000))
         })
         const userTransResult = await Transaction
             .find(search)
             .populate([
                 {path: 'category'},
                 {
-                    path: 'wallet', populate: {path: 'icon'}
+                    path: 'wallet', populate: [{path: 'icon'}, {path: 'currency'}]
                 }])
             .sort({date: -1})
 
@@ -106,44 +111,21 @@ module.exports = {
         const data = await Transaction
             .aggregate([
                 {$match: {user: new mongoose.Types.ObjectId(req.body.userId)}},
-                ])
+            ])
             .facet({
-                rawChartData:[{ $group: {   _id: {"date": "$date", "category": "$category.type"},
-                                            total: {$sum: "$amount"},
-                                        }},],
-                rawDataPieChart:[{ $group: {   _id: {"name": "$category.name", "category": "$category.type"},
-                                            total: {$sum: "$amount"},
-                                        }},]
+                rawChartData: [{
+                    $group: {
+                        _id: {"date": "$date", "category": "$category.type"},
+                        total: {$sum: "$amount"},
+                    }
+                },],
+                rawDataPieChart: [{
+                    $group: {
+                        _id: {"name": "$category.name", "category": "$category.type"},
+                        total: {$sum: "$amount"},
+                    }
+                },]
             })
-
-
-        let transactionData = []
-        data[0].rawChartData.forEach((eachResult, index) => {
-            let checkingDateIndex = transactionData.findIndex(item => item?.XAxis === eachResult._id.date.toLocaleDateString());
-            if (checkingDateIndex === -1) {
-                transactionData.push({XAxis: eachResult._id.date.toLocaleDateString(), [eachResult._id.category]: eachResult.total})
-            } else {
-                transactionData[checkingDateIndex] = {
-                    ...transactionData[checkingDateIndex],
-                    [eachResult._id.category]: eachResult.total
-                }
-            }
-        })
-        transactionData.sort((a, b) => new Date(a.XAxis) - new Date(b.XAxis));
-
-    let rawDataPieChartExpense = data[0].rawDataPieChart.filter((data=>data._id.category === "EXPENSE"))
-     let dataPieChartExpense =[]
-         rawDataPieChartExpense.forEach(item =>dataPieChartExpense.push({...item._id, value:item.total}))
-    let rawDataPieChartIncome= data[0].rawDataPieChart.filter((data=>data._id.category === "INCOME"))
-        let dataPieChartIncome=[]
-        rawDataPieChartIncome.forEach(item =>dataPieChartIncome.push({...item._id, value:item.total}))
-        console.log(data[0].rawDataPieChart);
-        console.log(dataPieChartIncome,dataPieChartExpense);
-
-        res.json({success: true, transactionData,dataPieChartIncome,dataPieChartExpense})
-    })
+    }),
 
 }
-
-
-
