@@ -12,7 +12,7 @@ module.exports = {
             category: req.body.category,
             date: req.body.date,
             note: req.body.note,
-            user: req.body.user,
+            user: req.body.user
         })
         await transaction.save(err => {
             if (err) {
@@ -72,10 +72,10 @@ module.exports = {
         const result = await Transaction
             .aggregate()
             .lookup({
-                from: 'category',
-                localField: 'category._id',
-                foreignField: '_id',
-                as: 'asdasd'
+                from:'category',
+                localField:'category._id',
+                foreignField:'_id',
+                as:'asdasd'
             })
             .group({_id: '$category'})
 
@@ -83,12 +83,12 @@ module.exports = {
     }),
     searchTransaction: asyncWrapper(async (req, res, nex) => {
         let search = {user: req.body.userId,}
-        req.body?.wallet?.icon?._id && (search.wallet = req.body.wallet)
-        req.body?.category?._id && (search.category._id = req.body.category._id)
-        req.body?.note && (search.note = new RegExp(req.body.note, 'ig'))
-        req.body?.date && (search.date = {
-            $gte: new Date(req.body.date.split("->")[0]),
-            $lt: new Date(req.body.date.split("->")[1])
+        req.body?.wallet && (search.wallet=req.body.wallet)
+        req.body?.category?._id && (search.category=req.body.category)
+        req.body?.note && (search.note=new RegExp(req.body.note,'ig'))
+        req.body?.date && (search.date={
+                $gte: new Date(req.body.date.split("->")[0]),
+                $lt: new Date(new Date(req.body.date.split('->')[1]).getTime()+(24*3600*1000))
         })
         const userTransResult = await Transaction
             .find(search)
@@ -97,6 +97,7 @@ module.exports = {
                 {
                     path: 'wallet', populate: {path: 'icon'}
                 }])
+            .sort({date: -1})
 
         res.json({success: true, data: userTransResult})
     }),
