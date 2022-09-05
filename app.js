@@ -49,7 +49,7 @@ connectDB().then(() => {
 
 // catch 404 and forward to error handler
 app.use(function(err, req, res, next) {
-    console.log(req.url + 'Not Found');
+    console.log(req.url + 'Not Found', err.message);
     err.status = 404;
     res.status(404).json(err.message);
 });
