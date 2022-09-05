@@ -33,10 +33,13 @@ module.exports = {
         res.json({success: true, data: transaction})
     },
     listTransactionUser: async (req, res, next) => {
-        const list = await Transaction.find({user: req.body.user}).populate([{path: 'category'}, {
-            path: 'wallet',
-            populate: {path: 'icon'}
-        }]).sort({date: -1})
+        const list = await Transaction.find({user: req.body.user})
+            .populate([{path: 'category'},
+                {
+                    path: 'wallet',
+                    populate: [{path: 'icon'}, {path: 'currency'}]
+                }
+            ]).sort({date: -1})
         res.json({success: true, data: list})
     },
     listCategory: async (req, res, next) => {
@@ -83,19 +86,20 @@ module.exports = {
     }),
     searchTransaction: asyncWrapper(async (req, res, nex) => {
         let search = {user: req.body.userId,}
-        req.body?.wallet && (search.wallet=req.body.wallet)
-        req.body?.category?._id && (search.category=req.body.category)
-        req.body?.note && (search.note=new RegExp(req.body.note,'ig'))
-        req.body?.date && (search.date={
-                $gte: new Date(req.body.date.split("->")[0]),
-                $lt: new Date(new Date(req.body.date.split('->')[1]).getTime()+(24*3600*1000))
+        req.body?.wallet && (search.wallet = req.body.wallet)
+        req.body?.category?._id && (search.category = req.body.category)
+        req.body?.note && (search.note = new RegExp(req.body.note, 'ig'))
+        req.body?.date && (search.date = {
+            $gte: new Date(req.body.date.split("->")[0]),
+            $lt: new Date(new Date(req.body.date.split('->')[1]).getTime() + (24 * 3600 * 1000))
         })
         const result = await Transaction
             .find(search)
             .populate([
                 {path: 'category'},
-                {path: 'wallet', populate: {path: 'icon'}
-        }]).sort({date: -1})
+                {
+                    path: 'wallet', populate: {path: 'icon'}
+                }]).sort({date: -1})
         res.json({success: true, data: result})
     }),
 
