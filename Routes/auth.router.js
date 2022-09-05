@@ -17,4 +17,7 @@ router.route('/firebase')
 router.route('/change-password')
     .put(verifyToken, authenticationController.changePassword);
 
+router.route('/forgot-password')
+    .post(authenticationController.forgotPassword);
+
 module.exports = router;
