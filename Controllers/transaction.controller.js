@@ -3,6 +3,7 @@ const Icon = require('../Models/icon.model');
 const Category = require('../Models/category.model')
 const asyncWrapper = require("../Middleware/async");
 
+
 module.exports = {
     addTransaction: asyncWrapper(async (req, res, next) => {
         const transaction = new Transaction({
@@ -28,14 +29,14 @@ module.exports = {
         }).populate([{path: 'category'}, {
             path: 'wallet',
             populate: {path: 'icon'}
-        }])
+        }]).sort({date: -1})
         res.json({success: true, data: transaction})
     },
     listTransactionUser: async (req, res, next) => {
         const list = await Transaction.find({user: req.body.user}).populate([{path: 'category'}, {
             path: 'wallet',
             populate: {path: 'icon'}
-        }])
+        }]).sort({date: -1})
         res.json({success: true, data: list})
     },
     listCategory: async (req, res, next) => {
@@ -71,10 +72,10 @@ module.exports = {
         const result = await Transaction
             .aggregate()
             .lookup({
-                from:'category',
-                localField:'category._id',
-                foreignField:'_id',
-                as:'asdasd'
+                from: 'category',
+                localField: 'category._id',
+                foreignField: '_id',
+                as: 'asdasd'
             })
             .group({_id: '$category'})
 
@@ -87,14 +88,14 @@ module.exports = {
         req.body?.note && (search.note=new RegExp(req.body.note,'ig'))
         req.body?.date && (search.date={
                 $gte: new Date(req.body.date.split("->")[0]),
-                $lt: new Date(req.body.date.split("->")[1])
+                $lte: new Date(req.body.date.split("->")[1])
         })
         const result = await Transaction
             .find(search)
             .populate([
                 {path: 'category'},
                 {path: 'wallet', populate: {path: 'icon'}
-        }])
+        }]).sort({date: -1})
         res.json({success: true, data: result})
     }),
 
