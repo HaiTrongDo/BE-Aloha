@@ -92,11 +92,11 @@ module.exports = {
         if (!user) {
             res.status(200).json({
                 success: false,
-                message: 'Account is not exist!',
+                message: 'This email is not registered with us, please try again',
             });
         }
         const token = md5(user._id + user.email + new Date().getTime());
-        const resetUrl = `${process.env.NODE_ENV === 'prod' ? '' : 'http://localhost:3000'}/reset-password?token=${token}`;
+        const resetUrl = `${process.env.NODE_ENV === 'prod' ? '' : 'http://localhost:3000'}/reset-password/${token}`;
         let newResetPassword = new ResetPassword({
             userId: user._id,
             token: token,
@@ -111,7 +111,7 @@ module.exports = {
             // Thực hiện gửi email
             await mailer.sendMail(email, 'Password Recovering', html)
             // Quá trình gửi email thành công thì gửi về thông báo success cho người dùng
-            res.status(200).json({success: true, message: 'vui long kiem tra email'})
+            res.status(200).json({success: true, message: 'Please check your email account for further instructions.'})
         } catch (error) {
             // Nếu có lỗi thì log ra để kiểm tra và cũng gửi về client
             res.send(error)
