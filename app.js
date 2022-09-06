@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const path = require('path');
 const cors = require('cors')
 const auth = require('./Routes/auth.router');
+const user = require('./Routes/user.router');
 const icon = require('./Routes/icon.router');
 const currency = require('./Routes/currency.router');
 const wallet = require('./Routes/wallet.router');
@@ -35,6 +36,7 @@ app.get('/', function(req, res) {
 
 app.use('/auth', auth);
 app.use('/icon', icon);
+app.use('/user', user);
 app.use('/currency', currency);
 app.use('/wallet', wallet);
 app.use('/my-account', myAccount);
