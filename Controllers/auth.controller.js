@@ -100,8 +100,8 @@ module.exports = {
         try {
             // Lấy data truyền lên từ form phía client
             const html = `<p><b>Hello ${user.username}!</b></p> <br>
-                        Your reset password link is :<b> ${resetUrl}</b> <br>
-                        Please do not disclose this OTP to anyone else.`
+                        Your reset password link is :<a href='${resetUrl}'>click here</a> <br>
+                        Please do not disclose this OTP to any"one else.`
             // Thực hiện gửi email
             await mailer.sendMail(email,'Password Recovering', html)
             // Quá trình gửi email thành công thì gửi về thông báo success cho người dùng
