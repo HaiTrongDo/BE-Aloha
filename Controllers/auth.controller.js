@@ -86,7 +86,7 @@ module.exports = {
         if (!user) {
             res.status(200).json({
                 success: false,
-                message: 'Email is not exist!',
+                message: 'Account is not exist!',
             });
         }
         const token = md5(user._id + user.email + new Date().getTime());
@@ -105,7 +105,7 @@ module.exports = {
             // Thực hiện gửi email
             await mailer.sendMail(email,'Password Recovering', html)
             // Quá trình gửi email thành công thì gửi về thông báo success cho người dùng
-            res.send('<h3>Your email has been sent successfully.</h3>')
+            res.status(200).json({success: true, message: 'vui long kiem tra email'})
         } catch (error) {
             // Nếu có lỗi thì log ra để kiểm tra và cũng gửi về client
             res.send(error)
