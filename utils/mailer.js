@@ -1,6 +1,6 @@
 const nodeMailer = require('nodemailer')
-const adminEmail = 'aloha.money.codegym@gmail.com'
-const adminPassword = 'ddtjbgzxqokphzwi'
+// const ADMIN_EMAIL = 'aloha.money.codegym@gmail.com'
+// const ADMIN_PASSWORD = 'ddtjbgzxqokphzwi'
 const mailHost = 'smtp.gmail.com'
 const mailPort = 587
 
@@ -10,13 +10,13 @@ const sendMail = (to, subject, htmlContent) => {
         port: mailPort,
         secure: false,
         auth: {
-            user: adminEmail,
-            pass: adminPassword
+            user: process.env.ADMIN_EMAIL,
+            pass: process.env.ADMIN_PASSWORD
         }
     })
 
     const options = {
-        from: adminEmail,
+        from: process.env.ADMIN_EMAIL,
         to: to,
         subject: subject,
         html: htmlContent
