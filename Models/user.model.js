@@ -38,6 +38,10 @@ const UserSchema = new Schema({
         type: Schema.Types.Array,
         ref: 'Wallet'
     },
+    isActive:{
+        type: Boolean,
+        default: true
+    }
 },{timestamps: true})
 
 module.exports = mongoose.model('User', UserSchema);
