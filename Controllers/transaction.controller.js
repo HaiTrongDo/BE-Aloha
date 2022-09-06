@@ -101,16 +101,27 @@ module.exports = {
                 {path: 'category'},
                 {
                     path: 'wallet', populate: [{path: 'icon'}, {path: 'currency'}]
-                }])
+}])
             .sort({date: -1})
 
         res.json({success: true, data: userTransResult})
     }),
 
     getReportData: asyncWrapper(async (req, res, next) => {
+        let bodyDate = new Date(req.body.date)
+        bodyDate.setMonth(bodyDate.getMonth() + 1, 1);
+        let endDate = new Date(bodyDate)
         const data = await Transaction
             .aggregate([
-                {$match: {user: new mongoose.Types.ObjectId(req.body.userId)}},
+                {$match:
+                        {$and:[
+                    {user: new mongoose.Types.ObjectId(req.body.userId)},
+                                { date: {
+                                        $gte: new Date(req.body.date),
+                                        $lt: new Date(endDate)
+                                    }
+                                }]}
+                        },
                 ])
             .facet({
                 rawChartData: [{
@@ -127,8 +138,8 @@ module.exports = {
                 },]
             })
 
-        console.log(data[0].rawChartData);
 
+        // console.log(data);
         let transactionData = []
         data[0].rawChartData.forEach((eachResult, index) => {
             let checkingDateIndex = transactionData.findIndex(item => item?.XAxis === eachResult._id.date.toLocaleDateString());
