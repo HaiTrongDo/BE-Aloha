@@ -36,8 +36,8 @@ module.exports = {
             <a href="http://localhost:3000/login" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Aloha</a>
             </div>
             <p style="font-size:1.1em">Hi,</p>
-            <p>Thank you for choosing Aloha. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>
-            <a href="http://localhost:8080/auth/checkSignUp?email=${req.body.email}" style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;"
+            <p>Thank you for choosing Aloha. Click the following OTP to complete your Sign Up procedures.</p>
+            <a href="http://localhost:8080/auth/checkSignUp?email=${req.body.email}" style="background: #00466a;margin: 0 auto;text-decoration:none;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;"
             >${OTP}
             </a>
             <p style="font-size:0.9em;">Regards,<br />Aloha</p>
@@ -61,7 +61,7 @@ module.exports = {
 
     checkSignUp: asyncWrapper(async (req, res) => {
         await User.findOneAndUpdate({email: req.query.email}, { isActive: true})
-        res.location('http://localhost:3000/login')
+        return res.send('Email has been activated')
     }),
 
     signin: asyncWrapper(async function (req, res) {
