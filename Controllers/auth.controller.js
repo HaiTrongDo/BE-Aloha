@@ -16,12 +16,15 @@ const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/aloha-money.a
 module.exports = {
 
     signup: asyncWrapper(async function (req, res) {
+        const checkUser = await User.findOne({email: req.body.email})
         if (!req.body.email || !req.body.password) {
             res.status(401).json({success: false, msg: 'Please pass username and password.'});
         } else if (!req.body.confirmPassword) {
             res.status(401).json({success: false, msg: 'Please pass confirm password.'})
         } else if (req.body.password !== req.body.confirmPassword) {
             res.status(401).json({success: false, msg: 'Wrong confirm password.'})
+        } else if (checkUser?.email) {
+            return res.status(401).json({success: false, msg: 'Email already exists'})
         } else {
             const hashPassword = await argon2.hash(req.body.password)
             let newUser = new User({
@@ -39,7 +42,7 @@ module.exports = {
             </div>
             <p style="font-size:1.1em">Hi,</p>
             <p>Thank you for choosing Aloha. Click the following OTP to complete your Sign Up procedures.</p>
-            <a href=${URL_BE + "auth/checkSignUp?email="+req.body.email} style="background: #00466a;margin: 0 auto;text-decoration:none;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;"
+            <a href=${URL_BE + "auth/checkSignUp?email=" + req.body.email} style="background: #00466a;margin: 0 auto;text-decoration:none;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;"
             >${OTP}
             </a>
             <p style="font-size:0.9em;">Regards,<br />Aloha</p>
