@@ -124,17 +124,17 @@ module.exports = {
         const {token, password, confirmPassword} = req.body;
         const resetPassword = await ResetPassword.findOne({token: token}, {}, {$sort: {createdAt: -1}});
         if (!resetPassword) {
-            res.status(200).json({
+            res.status(400).json({
                 success: false,
                 message: 'Token is not exist!',
             });
         } else if ((new Date().getTime() - new Date(resetPassword.createdAt).getTime()) / 1000 > 120) {
-            res.status(200).json({
+            res.status(400).json({
                 success: false,
                 message: 'Token het han!',
             });
         } else if (password !== confirmPassword) {
-            res.status(200).json({
+            res.status(400).json({
                 success: false,
                 message: 'Sai mat khau!',
             });
