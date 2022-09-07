@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start-dev": "nodemon --inspect app.js",
-    "start": "node app.js"
+    "start": "nodemon --inspect app.js"
   },
   "dependencies": {
     "argon2": "^0.28.7",
