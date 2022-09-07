@@ -10,8 +10,8 @@ const sendMail = (to, subject, htmlContent) => {
         port: mailPort,
         secure: false,
         auth: {
-            user: 'aloha.money.codegym@gmail.com',
-            pass: 'ddtjbgzxqokphzwi'
+            user: ADMIN_EMAIL,
+            pass: ADMIN_PASSWORD
         }
     })
 
