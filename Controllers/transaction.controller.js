@@ -3,9 +3,14 @@ const Icon = require('../Models/icon.model');
 const Category = require('../Models/category.model')
 const asyncWrapper = require("../Middleware/async");
 const mongoose = require("mongoose");
+const {sendMail} = require('../utils/mailer')
+const htmlContent = require('../utils/emailContent')
+
+
 
 module.exports = {
     addTransaction: asyncWrapper(async (req, res, next) => {
+
         const transaction = new Transaction({
             wallet: req.body.wallet,
             amount: req.body.amount,
@@ -14,15 +19,19 @@ module.exports = {
             note: req.body.note,
             user: req.body.user
         })
-        await transaction.save(err => {
+        await transaction.save((err,savedData) => {
             if (err) {
                 throw err
             }
 
+            if (req.body?.user?.email){
+                console.log({savedData});
+                sendMail(req.body?.user?.email,"Aloha Transaction Notification", htmlContent.htmlEmailTransaction(req.body,savedData))
+            }
             res.status(200).json({success: true, data: transaction})
         })
     }),
-    listTransactionWallet: async (req, res, next) => {
+    listTransactionWallet: asyncWrapper(async (req, res, next) => {
         const transaction = await Transaction.find({
             user: req.body.user,
             wallet: req.body.wallet
@@ -33,8 +42,8 @@ module.exports = {
             }
         ]).sort({date: -1})
         res.json({success: true, data: transaction})
-    },
-    listTransactionUser: async (req, res, next) => {
+    }),
+    listTransactionUser: asyncWrapper(async (req, res, next) => {
         const list = await Transaction.find({user: req.body.user})
             .populate([{path: 'category'},
                 {
@@ -43,19 +52,19 @@ module.exports = {
                 }
             ]).sort({date: -1})
         res.json({success: true, data: list})
-    },
-    listCategory: async (req, res, next) => {
+    }),
+    listCategory: asyncWrapper(async (req, res, next) => {
         const category = await Category.find();
         res.json({success: true, data: category})
-    },
-    listExpense: async (req, res, nex) => {
+    }),
+    listExpense: asyncWrapper(async (req, res, nex) => {
         const category = await Category.find({type: 'EXPENSE'})
         res.json({success: true, data: category})
-    },
-    listIncome: async (req, res, next) => {
+    }),
+    listIncome:asyncWrapper( async (req, res, next) => {
         const category = await Category.find({type: 'INCOME'})
         res.json({success: true, data: category})
-    },
+    }),
     editTransaction: asyncWrapper(async (req, res, next) => {
         const transaction = {
             _id: req.body.id,
@@ -138,8 +147,6 @@ module.exports = {
                 },]
             })
 
-
-        // console.log(data);
         let transactionData = []
         data[0].rawChartData.forEach((eachResult, index) => {
             let checkingDateIndex = transactionData.findIndex(item => item?.XAxis === eachResult._id.date.toLocaleDateString());
