@@ -115,7 +115,7 @@ module.exports = {
             .aggregate([
                 {$match:
                         {$and:[
-                    {user: new mongoose.Types.ObjectId(req.body.userId)},
+                    {wallet: new mongoose.Types.ObjectId(req.body.currentWallet)},
                                 { date: {
                                         $gte: new Date(req.body.date),
                                         $lt: new Date(endDate)
