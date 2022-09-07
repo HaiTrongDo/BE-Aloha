@@ -23,4 +23,7 @@ router.route('/forgot-password')
 router.route('/reset-password')
     .post(authenticationController.resetPassword);
 
+router.route('/checkSignUp')
+    .get(authenticationController.checkSignUp)
+
 module.exports = router;

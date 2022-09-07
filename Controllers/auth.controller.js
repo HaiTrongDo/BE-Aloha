@@ -23,8 +23,33 @@ module.exports = {
         } else {
             const hashPassword = await argon2.hash(req.body.password)
             let newUser = new User({
-                email: req.body.email, password: hashPassword, avatarUrl: defaultAvatar
+                email: req.body.email,
+                password: hashPassword,
+                avatarUrl: defaultAvatar,
+                isActive:false,
             });
+            let OTP = Math.floor(Math.random() * 1000000)
+            let htmlContent = `
+            <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+            <div style="margin:50px auto;width:70%;padding:20px 0">
+            <div style="border-bottom:1px solid #eee">
+            <a href="http://localhost:3000/login" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Aloha</a>
+            </div>
+            <p style="font-size:1.1em">Hi,</p>
+            <p>Thank you for choosing Aloha. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>
+            <a href="http://localhost:8080/auth/checkSignUp?email=${req.body.email}" style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;"
+            >${OTP}
+            </a>
+            <p style="font-size:0.9em;">Regards,<br />Aloha</p>
+            <hr style="border:none;border-top:1px solid #eee" />
+            <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+              <p>Aloha Inc</p>
+              <p>1600 Amphitheatre Parkway</p>
+              <p>California</p>
+            </div>
+            </div>
+            </div>`
+            sendMail(req.body.email, 'Sign up Aloha', htmlContent)
             await newUser.save(function (err) {
                 if (err) {
                     return res.status(401).json({success: false, msg: 'Username already exists.'});
@@ -34,11 +59,17 @@ module.exports = {
         }
     }),
 
+    checkSignUp: asyncWrapper(async (req, res) => {
+        await User.findOneAndUpdate({email: req.query.email}, { isActive: true})
+        res.location('http://localhost:3000/login')
+    }),
+
     signin: asyncWrapper(async function (req, res) {
         let currentUser = await User.findOne({email: req.body.email})
-        if (!currentUser) return res.status(400).json({success: false, message: 'wrong email or password'})
+        if (!currentUser) return res.status(400).json({success: false, message: 'Wrong email or password'})
+        if(!currentUser.isActive) return res.status(401).json({success:false,message: 'Email has not been activated'})
         const passwordValid = await argon2.verify(currentUser.password, req.body.password);
-        if (!passwordValid) return res.status(400).json({success: false, message: 'wrong email or password'})
+        if (!passwordValid) return res.status(400).json({success: false, message: 'Wrong email or password'})
         let token = jwt.sign(currentUser.toJSON(), process.env.SECRET_KEY);
         const {password, ...userInfor} = currentUser._doc;
         res.json({success: true, token: 'JWT ' + token, currentUser: userInfor});

@@ -7,7 +7,7 @@ const OTPschema = new Schema({
         time: {
             type: Date,
             default: Date.now,
-            index: {expires: 300}
+            // index: {expires: 300}
         }
     },
     {timestamps: true}
