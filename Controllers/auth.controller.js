@@ -114,12 +114,12 @@ module.exports = {
         let currentUser = await User.findOne({uid: req.body.uid})
         if (!currentUser) {
             try {
+                !req.body.email && (req.body.email = '')
                 let newUser = new User({...req.body});
                 currentUser = await newUser.save()
             } catch (err) {
                 console.log(err.message)
             }
-
         }
         let token = jwt.sign(JSON.stringify(req.body), process.env.SECRET_KEY);
         res.status(200).json({success: true, token: 'JWT ' + token, msg: "Login successful", currentUser});
