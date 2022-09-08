@@ -8,8 +8,8 @@ const asyncWrapper = require("../Middleware/async");
 const mailer = require("../utils/mailer");
 const md5 = require('md5');
 const {sendMail} = require('../utils/mailer')
-const URL_FE = 'http://localhost:3000/'
-const URL_BE = 'http://localhost:8080/'
+const URL_FE = 'https://alohamoney.vercel.app/'
+const URL_BE = 'https://aloha-back-end.herokuapp.com/'
 
 const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/aloha-money.appspot.com/o/DefaultUser.jpg?alt=media&token=58615f07-c33a-42f7-aa11-43b9d8170593"
 
@@ -28,6 +28,7 @@ module.exports = {
         } else {
             const hashPassword = await argon2.hash(req.body.password)
             let newUser = new User({
+                username:req.body.username,
                 email: req.body.email,
                 password: hashPassword,
                 avatarUrl: defaultAvatar,
@@ -66,11 +67,11 @@ module.exports = {
 
     checkSignUp: asyncWrapper(async (req, res) => {
         await User.findOneAndUpdate({email: req.query.email}, {isActive: true})
-        return res.redirect('http://localhost:3000/login')
+        return res.redirect(URL_FE+'login')
     }),
 
     signin: asyncWrapper(async function (req, res) {
-        console.log(req.body);
+
         let currentUser = await User.findOne({email: req.body.email})
         if (!currentUser) return res.status(400).json({success: false, message: 'Wrong email or password'})
         if (!currentUser.isActive) return res.status(401).json({
@@ -136,7 +137,7 @@ module.exports = {
             });
         }
         const token = md5(user._id + user.email + new Date().getTime());
-        const resetUrl = `${process.env.NODE_ENV === 'prod' ? '' : 'http://localhost:3000'}/reset-password/${token}`;
+        const resetUrl = `${process.env.NODE_ENV === 'prod' ? '' : URL_FE}/reset-password/${token}`;
         let newResetPassword = new ResetPassword({
             userId: user._id,
             token: token,
