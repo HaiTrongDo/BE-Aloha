@@ -8,8 +8,9 @@ const asyncWrapper = require("../Middleware/async");
 const mailer = require("../utils/mailer");
 const md5 = require('md5');
 const {sendMail} = require('../utils/mailer')
-const URL_FE = 'https://alohamoney.vercel.app/'
-const URL_BE = 'https://aloha-back-end.herokuapp.com/'
+const URL_FE = 'http://localhost:3000/'
+const URL_BE = 'http://localhost:8080/'
+
 
 const defaultAvatar = "https://firebasestorage.googleapis.com/v0/b/aloha-money.appspot.com/o/DefaultUser.jpg?alt=media&token=58615f07-c33a-42f7-aa11-43b9d8170593"
 
@@ -39,7 +40,7 @@ module.exports = {
             <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
             <div style="margin:50px auto;width:70%;padding:20px 0">
             <div style="border-bottom:1px solid #eee">
-            <a href=${URL_FE + "login"} style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Aloha</a>
+            <a href=${process.env.URL_FE || URL_FE + "login"} style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Aloha</a>
             </div>
             <p style="font-size:1.1em">Hi,</p>
             <p>Thank you for choosing Aloha. Click the following OTP to complete your Sign Up procedures.</p>
@@ -67,7 +68,7 @@ module.exports = {
 
     checkSignUp: asyncWrapper(async (req, res) => {
         await User.findOneAndUpdate({email: req.query.email}, {isActive: true})
-        return res.redirect(URL_FE+'login')
+        return res.redirect(process.env.URL_FE || URL_FE +'login')
     }),
 
     signin: asyncWrapper(async function (req, res) {
@@ -137,7 +138,7 @@ module.exports = {
             });
         }
         const token = md5(user._id + user.email + new Date().getTime());
-        const resetUrl = `${process.env.NODE_ENV === 'prod' ? '' : URL_FE}/reset-password/${token}`;
+        const resetUrl = `${process.env.URL_FE || URL_FE}/reset-password/${token}`;
         let newResetPassword = new ResetPassword({
             userId: user._id,
             token: token,
