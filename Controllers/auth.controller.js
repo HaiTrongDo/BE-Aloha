@@ -138,7 +138,7 @@ module.exports = {
             });
         }
         const token = md5(user._id + user.email + new Date().getTime());
-        const resetUrl = `${process.env.URL_FE || URL_FE}/reset-password/${token}`;
+        const resetUrl = `${process.env.URL_FE || URL_FE}reset-password/${token}`;
         let newResetPassword = new ResetPassword({
             userId: user._id,
             token: token,
