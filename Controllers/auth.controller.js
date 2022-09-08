@@ -71,6 +71,7 @@ module.exports = {
     }),
 
     signin: asyncWrapper(async function (req, res) {
+        console.log(req.body);
         let currentUser = await User.findOne({email: req.body.email})
         if (!currentUser) return res.status(400).json({success: false, message: 'Wrong email or password'})
         if (!currentUser.isActive) return res.status(401).json({
